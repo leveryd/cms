@@ -37,7 +37,7 @@ name=122&type=2&dosubmit=&pc_hash=REHvhC&template=<?php%20phpinfo();?>
 其中的id参数需要是第一步操作中id值，pc_hash在复现时也需要改成审核人员自己的。
 
 响应中就有phpinfo信息。
-https://forum.90sec.org/forum.php?mod=attachment&aid=MjMzMDB8ODUzZDMzNDN8MTQ5MTgwNTYzNnwzMTkxfA%3D%3D
+![image](https://github.com/leveryd/cms/edit/master/53814d45723b41e7951292da705c2c38)
 
 查看源码，可以看到漏洞成因。
 phpcms/modules/block/block_admin.php文件中的public_view函数第265行起，写入了一个php文件，并且包含了它。
